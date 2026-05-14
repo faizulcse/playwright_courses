@@ -32,7 +32,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: process.env.BASE_URL || 'https://playwright.dev/',
-    actionTimeout: 45_000 ,
+    actionTimeout: 45_000,
     navigationTimeout: 45_000,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -42,28 +42,41 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /global-setup\.ts/,
+      dependencies: ['teardown'],
+    },
+
+    {
+      name: 'teardown',
+      testMatch: /global-teardown\.ts/,
+    },
+
+    {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
         headless: true,
+        storageState: './auth.json',
       },
+      dependencies: ['setup'],
     },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        headless: false
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     headless: false
+    //   },
+    // },
 
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        headless: false
-      },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //     headless: false
+    //   },
+    // },
 
     /* Test against mobile viewports. */
     // {

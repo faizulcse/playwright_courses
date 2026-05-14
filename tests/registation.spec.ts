@@ -1,7 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtute';
 import { faker } from '@faker-js/faker';
 
 
+test.use({ storageState: { cookies: [], origins: [] } }); // Clear cookies and local storage before each test
 test.describe('Registration feature', async () => {
     test.beforeEach(async ({ page, baseURL }) => {
         await page.goto(baseURL!);
