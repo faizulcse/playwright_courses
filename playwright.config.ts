@@ -44,12 +44,15 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /global-setup\.ts/,
-      dependencies: ['teardown'],
+      teardown: 'teardown',
     },
 
     {
       name: 'teardown',
       testMatch: /global-teardown\.ts/,
+      use: {
+        storageState: './auth.json',
+      },
     },
 
     {
