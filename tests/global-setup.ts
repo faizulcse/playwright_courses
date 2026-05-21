@@ -1,18 +1,22 @@
 import { test, expect } from '@playwright/test';
-import dotenv from 'dotenv';
+import LoginPage from '../page-object/LoginPage';
 
 test('Login with valid credentials', async ({ page, baseURL }) => {
-    await page.goto(baseURL!);
+    const userEmail = process.env.ADMIN_USERNAME;
+    const userPassword = process.env.ADMIN_PASSWORD;
+
+    let loginPage = new LoginPage(page);
+
+    await loginPage.goto(baseURL!);
+    await loginPage.clickLoginLink();
 
     // Login
-    await page.getByRole('link', { name: 'Log in' }).click();
+    await loginPage.loginwithCredentials(userEmail!, userPassword!);
+    await loginPage.clickLoginButton();
 
-    await page.getByRole('textbox', { name: 'Email:' }).fill(process.env.ADMIN_USERNAME!);
-    await page.getByRole('textbox', { name: 'Password:' }).fill(process.env.ADMIN_PASSWORD!);
-    await page.getByRole('checkbox', { name: 'Remember me?' }).check();
-    await page.getByRole('button', { name: 'Log in' }).click();
+    // Verify successful login
+    await loginPage.verifySuccessfulLogin(userEmail!);
 
-    await expect(page.getByRole('link', { name: process.env.ADMIN_USERNAME })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Register' })).toBeHidden();
+    // Save storage state to reuse in other tests
     await page.context().storageState({ path: './auth.json' });
 });

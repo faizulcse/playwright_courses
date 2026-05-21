@@ -47,6 +47,9 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /global-setup\.ts/,
+      use: {
+        headless: true,
+      },
       teardown: 'teardown',
     },
 
@@ -54,6 +57,7 @@ export default defineConfig({
       name: 'teardown',
       testMatch: /global-teardown\.ts/,
       use: {
+        headless: true,
         storageState: './auth.json',
       },
     },
@@ -62,7 +66,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        headless: true,
+        headless: false,
         storageState: './auth.json',
       },
       dependencies: ['setup'],

@@ -1,20 +1,24 @@
 import { test, expect } from './fixtute';
-
+import LoginPage from '../page-object/LoginPage';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 test.describe('Login feature test', () => {
 
-    test('Login with valid credentials', async ({ page, baseURL }) => {
-        await page.goto(baseURL!);
 
-        // Login
-        await page.getByRole('link', { name: 'Log in' }).click();
+    test('Login with valid invalid credentials', async ({ page, baseURL }) => {
+        const userEmail = "wrong_email@yopmail.com";
+        const userPassword = "asdflknasdfasd";
+        
+        // Navigate to login page
+        let loginPage: LoginPage = new LoginPage(page);
+        await loginPage.goto(baseURL!);
 
-        await page.getByRole('textbox', { name: 'Email:' }).fill(process.env.ADMIN_USERNAME!);
-        await page.getByRole('textbox', { name: 'Password:' }).fill('wrongPass');
-        await page.getByRole('checkbox', { name: 'Remember me?' }).check();
-        await page.getByRole('button', { name: 'Log in' }).click();
+        // Login with invalid credentials
+        await loginPage.clickLoginLink();
+        await loginPage.loginwithCredentials(userEmail, userPassword);
+        await loginPage.clickLoginButton();
 
-        await expect(page.getByText('The credentials provided are incorrect')).toBeVisible();
+        // Verify error message
+        await loginPage.verifyLoginErrorMessage('Login was unsuccessful. Please correct the errors and try again.');
     });
 });
